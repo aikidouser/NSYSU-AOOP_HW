@@ -2,10 +2,15 @@
 #define __STACK_H__
 
 class Stack {
-    enum { STACK_SIZE = 100 };
+    enum {
+        STACK_SIZE = 100
+    };
 
     int stk[STACK_SIZE];
     int sp;
+
+    Stack *prev;
+    Stack *top;
 
    public:
     Stack();
