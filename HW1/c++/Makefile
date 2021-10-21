@@ -20,7 +20,7 @@ stack.o: stack.cpp
 	${CC} ${CFLAGS} -c stack.cpp
 
 clean:
-	rm -f test1 test2 *.o dep.txt
+	rm -f test1 test2 *.o 
 
 dep:
 	${CC} -MM *.cpp > dep.txt

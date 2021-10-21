@@ -24,7 +24,7 @@ int Stack::pop() {
     int reValue = -1;
 
     Stack *popNode = this->top;
-    if (popNode == this) {
+    if (popNode->prev == NULL) {
         std::cout << "The stack had been empty." << std::endl;
     } else {
         reValue = popNode->sp;
