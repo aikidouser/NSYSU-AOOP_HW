@@ -6,6 +6,10 @@
 struct stack {
     int sp;
     int stk[STACK_SIZE];
+
+    int val;
+    struct stack* prev;
+    struct stack* top;
 };
 
 extern void push(struct stack* this, int x);
