@@ -1,6 +1,11 @@
 #ifndef __MYTAR_H__
 #define __MYTAR_H__
 
+#include <fstream>
+#include <iostream>
+
+using namespace std;
+
 struct TarHeader {
     char filename[100];
     char filemode[8];
@@ -21,6 +26,19 @@ struct TarHeader {
     char devminor[8];
     char prefix[155];
     char pad[12];
+};
+
+class TarHandler {
+   public:
+    TarHandler(ifstream& is);
+    ~TarHandler();
+    void tar_print();
+
+   private:
+    enum {
+        BLOCK_SIZE = 512
+    };
+    int get_fsize(char* c);
 };
 
 #endif
