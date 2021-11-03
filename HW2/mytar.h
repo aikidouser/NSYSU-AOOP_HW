@@ -2,6 +2,7 @@
 #define __MYTAR_H__
 
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 
 using namespace std;
@@ -38,7 +39,10 @@ class TarHandler {
     enum {
         BLOCK_SIZE = 512
     };
-    int get_fsize(char* c);
+    int OctToDec(char* c);
+    char getftype(char c);
+    string getfmode(char* c);
+    string unixConvert(char* c);
 };
 
 #endif

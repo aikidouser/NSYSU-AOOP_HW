@@ -1,6 +1,9 @@
 #include "mytar.h"
 
 #include <math.h>
+#include <string.h>
+
+#include <map>
 
 TarHandler::TarHandler(ifstream& is) {
     struct TarHeader tar_header;
@@ -32,7 +35,7 @@ TarHandler::TarHandler(ifstream& is) {
         is.read(tar_header.prefix, 155);
         is.read(tar_header.pad, 12);
 
-        cur_fsize = get_fsize(tar_header.filesize);
+        cur_fsize = OctToDec(tar_header.filesize);
         cur_fbnum = cur_fsize / BLOCK_SIZE;
 
         if (cur_fsize % BLOCK_SIZE)
@@ -41,19 +44,64 @@ TarHandler::TarHandler(ifstream& is) {
         i += 1 + cur_fbnum;
         if (cur_fbnum)
             is.seekg(cur_fbnum * BLOCK_SIZE, ios::cur);
+
+        if (strlen(tar_header.filename) != 0) {
+            cout << getftype(tar_header.type) << getfmode(tar_header.filemode) << " "
+                 << tar_header.username << "/" << tar_header.groupname << " "
+                 << right << setw(7) << cur_fsize << " "
+                 << tar_header.mtime << " "
+                 << tar_header.filename << endl;
+        }
     }
 }
 
 TarHandler::~TarHandler() {}
 
-int TarHandler::get_fsize(char* c) {
-    int i = 0, dec_fsize = 0, oct_fsize = 0;
+int TarHandler::OctToDec(char* c) {
+    int i = 0, dec = 0, oct = 0;
 
-    oct_fsize = atoi(c);
-    while (oct_fsize) {
-        dec_fsize += (oct_fsize % 10) * pow(8, i);
-        oct_fsize /= 10;
+    oct = atoi(c);
+    while (oct) {
+        dec += (oct % 10) * pow(8, i);
+        oct /= 10;
         i++;
     }
-    return dec_fsize;
+    return dec;
+}
+
+char TarHandler::getftype(char c) {
+    map<char, char> type_table;
+
+    type_table['0'] = '-';
+    type_table['1'] = 'l';
+    type_table['2'] = 'l';
+    type_table['3'] = 'c';
+    type_table['4'] = 'b';
+    type_table['5'] = 'd';
+    type_table['6'] = 'f';
+
+    return type_table[c];
+}
+
+string TarHandler::getfmode(char* c) {
+    map<char, string> mode_table;
+    string mode_msg = "";
+
+    mode_table['0'] = "---";
+    mode_table['1'] = "--x";
+    mode_table['2'] = "-w-";
+    mode_table['3'] = "-wx";
+    mode_table['4'] = "r--";
+    mode_table['5'] = "r-x";
+    mode_table['6'] = "rw-";
+    mode_table['7'] = "rwx";
+
+    for (size_t i = 4; i < strlen(c); i++) {
+        mode_msg.append(mode_table[c[i]]);
+    }
+
+    return mode_msg;
+}
+
+string TarHandler::unixConvert(char* c) {
 }
