@@ -39,10 +39,10 @@ class TarHandler {
     enum {
         BLOCK_SIZE = 512
     };
-    int OctToDec(char* c);
+    long long OctToDec(char* c);
     char getftype(char c);
     string getfmode(char* c);
-    string unixConvert(char* c);
+    void print_time(char* c);
 };
 
 #endif

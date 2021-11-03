@@ -2,6 +2,7 @@
 
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 #include <map>
 
@@ -48,19 +49,20 @@ TarHandler::TarHandler(ifstream& is) {
         if (strlen(tar_header.filename) != 0) {
             cout << getftype(tar_header.type) << getfmode(tar_header.filemode) << " "
                  << tar_header.username << "/" << tar_header.groupname << " "
-                 << right << setw(7) << cur_fsize << " "
-                 << tar_header.mtime << " "
-                 << tar_header.filename << endl;
+                 << right << setfill(' ') << setw(7) << cur_fsize << " ";
+            print_time(tar_header.mtime);
+            cout << " " << tar_header.filename << endl;
         }
     }
 }
 
 TarHandler::~TarHandler() {}
 
-int TarHandler::OctToDec(char* c) {
-    int i = 0, dec = 0, oct = 0;
+long long TarHandler::OctToDec(char* c) {
+    int i = 0;
+    long long dec = 0, oct = 0;
 
-    oct = atoi(c);
+    oct = atoll(c);
     while (oct) {
         dec += (oct % 10) * pow(8, i);
         oct /= 10;
@@ -103,5 +105,16 @@ string TarHandler::getfmode(char* c) {
     return mode_msg;
 }
 
-string TarHandler::unixConvert(char* c) {
+void TarHandler::print_time(char* c) {
+    string time_msg = "";
+    struct tm* timeinfo;
+    time_t unix_time = OctToDec(c) + 28800;
+
+    timeinfo = gmtime(&unix_time);
+
+    cout << 1900 + timeinfo->tm_year << "-"
+         << setfill('0') << setw(2) << timeinfo->tm_mon << "-"
+         << setfill('0') << setw(2) << timeinfo->tm_mday << " "
+         << setfill('0') << setw(2) << timeinfo->tm_hour << ":"
+         << setfill('0') << setw(2) << timeinfo->tm_min;
 }
