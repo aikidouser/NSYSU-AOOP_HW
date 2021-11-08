@@ -23,7 +23,7 @@ mytar.o: mytar.cpp
 	$(CC) $(CFLAGS) -c mytar.cpp
 
 clean:
-	rm -f test1 test2 *.o *.d dep
+	rm -f mytar *.o *.d dep
 
 dep: .dep
 
