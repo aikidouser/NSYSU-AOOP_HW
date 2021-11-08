@@ -6,13 +6,23 @@
 
 #include <map>
 
-TarHandler::TarHandler(ifstream& is) {
-    struct TarHeader tar_header;
+TarHandler::TarHandler(string filename) {
+    is.open(filename, ifstream::in | ifstream::binary);
+
+    if (!is) {
+        error_handle(filename);
+        exit(1);
+    }
 
     is.seekg(0, ios::end);
     long long tar_fsize = is.tellg();
     is.seekg(0, ios::beg);
     int num_blocks = tar_fsize / BLOCK_SIZE;
+
+    if (!if_tar(tar_fsize)) {
+        error_handle(filename);
+        exit(0);
+    }
 
     for (int i = 0; i < num_blocks;) {
         int cur_fbnum = 0, cur_fsize = 0;
@@ -39,24 +49,33 @@ TarHandler::TarHandler(ifstream& is) {
         cur_fsize = OctToDec(tar_header.filesize);
         cur_fbnum = cur_fsize / BLOCK_SIZE;
 
-        if (cur_fsize % BLOCK_SIZE)
-            ++cur_fbnum;
+        if (cur_fsize % BLOCK_SIZE) ++cur_fbnum;
 
         i += 1 + cur_fbnum;
-        if (cur_fbnum)
-            is.seekg(cur_fbnum * BLOCK_SIZE, ios::cur);
+        if (cur_fbnum) is.seekg(cur_fbnum * BLOCK_SIZE, ios::cur);
 
         if (strlen(tar_header.filename) != 0) {
-            cout << getftype(tar_header.type) << getfmode(tar_header.filemode) << " "
-                 << tar_header.username << "/" << tar_header.groupname << " "
-                 << right << setfill(' ') << setw(7) << cur_fsize << " ";
+            cout << getftype(tar_header.type) << getfmode(tar_header.filemode)
+                 << " " << tar_header.username << "/" << tar_header.groupname
+                 << " " << right << setfill(' ') << setw(7) << cur_fsize << " ";
             print_time(tar_header.mtime);
             cout << " " << tar_header.filename << endl;
         }
     }
 }
 
-TarHandler::~TarHandler() {}
+TarHandler::~TarHandler() {
+    is.close();
+}
+
+void TarHandler::error_handle(string filename) {
+    cout << "mytar: " << filename << ": Cannot open: No such file or directory" << endl;
+    cout << "mytar: Error is not recoverable: exiting now" << endl;
+}
+
+bool TarHandler::if_tar(int tar_filesize) {
+    return tar_filesize % 512 == 0 ? true : false;
+}
 
 long long TarHandler::OctToDec(char* c) {
     int i = 0;
@@ -113,7 +132,7 @@ void TarHandler::print_time(char* c) {
     timeinfo = gmtime(&unix_time);
 
     cout << 1900 + timeinfo->tm_year << "-"
-         << setfill('0') << setw(2) << timeinfo->tm_mon << "-"
+         << setfill('0') << setw(2) << timeinfo->tm_mon + 1 << "-"
          << setfill('0') << setw(2) << timeinfo->tm_mday << " "
          << setfill('0') << setw(2) << timeinfo->tm_hour << ":"
          << setfill('0') << setw(2) << timeinfo->tm_min;

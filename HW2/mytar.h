@@ -31,7 +31,7 @@ struct TarHeader {
 
 class TarHandler {
    public:
-    TarHandler(ifstream& is);
+    TarHandler(string filename);
     ~TarHandler();
     void tar_print();
 
@@ -39,6 +39,10 @@ class TarHandler {
     enum {
         BLOCK_SIZE = 512
     };
+    ifstream is;
+    struct TarHeader tar_header;
+    void error_handle(string filename);
+    bool if_tar(int tar_filesize);
     long long OctToDec(char* c);
     char getftype(char c);
     string getfmode(char* c);
