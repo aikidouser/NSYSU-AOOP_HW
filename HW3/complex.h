@@ -47,4 +47,6 @@ class Complex {
     double im;
 };
 
+Complex polar(const double leng, const double arg);
+
 #endif
