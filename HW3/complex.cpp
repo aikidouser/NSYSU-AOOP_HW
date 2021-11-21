@@ -24,19 +24,19 @@ Complex Complex::polar(const double leng, const double arg) {
     return *this;
 }
 
-double Complex::real() const {
+double Complex::real() {
     return re;
 }
-double Complex::imag() const {
+double Complex::imag() {
     return im;
 }
-double Complex::norm() const {
+double Complex::norm() {
     return re * re + im * im;
 }
-double Complex::abs() const {
+double Complex::abs() {
     return sqrt(norm());
 }
-double Complex::arg() const {
+double Complex::arg() {
     return atan2(im, re);
 }
 
@@ -83,13 +83,13 @@ Complex polar(const double leng, const double arg) {
     return temp;
 }
 double norm(const Complex& x) {
-    return x.norm();
+    return x.re * x.re + x.im * x.im;
 }
 double abs(const Complex& x) {
-    return x.abs();
+    return sqrt(norm(x));
 }
 double arg(const Complex& x) {
-    return x.arg();
+    return atan2(x.im, x.re);
 }
 
 Complex operator+(const Complex& x, const Complex& y) {

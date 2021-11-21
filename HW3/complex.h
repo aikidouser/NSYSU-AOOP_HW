@@ -13,11 +13,11 @@ class Complex {
 
     Complex polar(const double leng, const double arg);
 
-    double real() const;
-    double imag() const;
-    double norm() const;
-    double abs() const;
-    double arg() const;
+    double real();
+    double imag();
+    double norm();
+    double abs();
+    double arg();
 
     Complex operator++();
     Complex operator++(int);
