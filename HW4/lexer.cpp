@@ -42,7 +42,7 @@ bool Lexer::readch(const char& c) {
     return true;
 }
 
-Token* Lexer::scan() {
+unique_ptr<Token> Lexer::scan() {
     for (;; readch()) {
         if (peek == ' ' || peek == '\t')
             continue;
@@ -55,39 +55,51 @@ Token* Lexer::scan() {
     switch (peek) {
         case '&':
             if (readch('&'))
-                return new Word(Word::And);
+                // return new Word(Word::And);
+                return make_unique<Word>(Word::And);
             else
-                return new Token('&');
+                // return new Token('&');
+                return make_unique<Token>('&');
             break;
         case '|':
             if (readch('|'))
-                return new Word(Word::Or);
+                // return new Word(Word::Or);
+                return make_unique<Word>(Word::Or);
             else
-                return new Token('|');
+                // return new Token('|');
+                return make_unique<Token>('|');
             break;
         case '=':
             if (readch('='))
-                return new Word(Word::eq);
+                // return new Word(Word::eq);
+                return make_unique<Word>(Word::eq);
             else
-                return new Token('=');
+                // return new Token('=');
+                return make_unique<Token>('=');
             break;
         case '!':
             if (readch('='))
-                return new Word(Word::ne);
+                // return new Word(Word::ne);
+                return make_unique<Word>(Word::ne);
             else
-                return new Token('!');
+                // return new Token('!');
+                return make_unique<Token>('|');
             break;
         case '<':
             if (readch('='))
-                return new Word(Word::le);
+                // return new Word(Word::le);
+                return make_unique<Word>(Word::le);
             else
-                return new Token('<');
+                // return new Token('<');
+                return make_unique<Token>('<');
             break;
         case '>':
             if (readch('='))
-                return new Word(Word::ge);
+                // return new Word(Word::ge);
+                return make_unique<Word>(Word::ge);
             else
-                return new Token('>');
+                // return new Token('>');
+                return make_unique<Token>('>');
             break;
     }
 
@@ -98,7 +110,8 @@ Token* Lexer::scan() {
             readch();
         } while (isdigit(peek));
         if (peek != '.') {
-            return new Num(v);
+            // return new Num(v);
+            return make_unique<Num>(v);
         }
 
         float x = v;
@@ -110,7 +123,8 @@ Token* Lexer::scan() {
             x += atoi(string(1, static_cast<char>(peek)).c_str()) / d;
             d *= 10;
         }
-        return new Real(x);
+        // return new Real(x);
+        return make_unique<Real>(x);
     }
 
     if (isalpha(peek)) {
@@ -124,13 +138,16 @@ Token* Lexer::scan() {
 
         if (words.find(s) != words.end()) {
             Word w = words.find(s)->second;
-            return new Word(w);
+            // return new Word(w);
+            return make_unique<Word>(words.find(s)->second);
         }
         Word y = Word(s, static_cast<int>(Tag::ID));
-        return new Word(y);
+        // return new Word(y);
+        return make_unique<Word>(y);
     }
 
     Token tok = Token(static_cast<int>(peek));
     peek = ' ';
-    return new Token(tok);
+    // return new Token(tok);
+    return make_unique<Token>(tok);
 };

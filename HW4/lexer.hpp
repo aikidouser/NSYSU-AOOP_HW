@@ -25,7 +25,7 @@ class Lexer {
     static int line;
 
     Lexer();
-    Token* scan();
+    unique_ptr<Token> scan();
 
    private:
     char peek = ' ';

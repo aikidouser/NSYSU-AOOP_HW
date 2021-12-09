@@ -17,7 +17,8 @@ int main(int argc, const char* argv[]) {
     Lexer lexer = Lexer();
     try {
         while (1) {
-            Token* t = lexer.scan();
+            // Token* t = lexer.scan();
+            unique_ptr<Token> t = lexer.scan();
             if (t->tag == 276)
                 continue;
             if (t->tag < 256)
