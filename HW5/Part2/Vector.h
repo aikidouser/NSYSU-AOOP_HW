@@ -17,7 +17,7 @@ class vector {
         cout << "  count = " << ++count << endl;
     }
     ~vector() {
-        Trace dummy("vector<T>::~vector()");
+        Trace dummy("vector<T>::~vector");
         cout << "  count = " << count-- << endl;
 
         delete[] vec;
@@ -36,13 +36,13 @@ template <>
 class vector<void*> {
    public:
     vector(const int& s = 0) {
-        Trace dummy("vector<void*>::vector(int)");
+        TRACE(dummy, "vector<void*>::vector(int)");
         ptr = new void*[s];
 
         cout << "  count = " << ++count << endl;
     }
     ~vector() {
-        Trace dummy("vector<void*>::~vector");
+        TRACE(dummy, "vector<void*>::~vector");
 
         cout << "  count = " << count-- << endl;
         delete[] ptr;
