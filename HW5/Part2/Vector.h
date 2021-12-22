@@ -12,12 +12,12 @@ template <typename T>
 class vector {
    public:
     inline vector(const int& s = 0) {
-        Trace dummy("vector<T>::vector(int)");
+        TRACE(dummy, "vector<T>::vector(int)");
         vec = new T[s];
         cout << "  count = " << ++count << endl;
     }
     ~vector() {
-        Trace dummy("vector<T>::~vector");
+        TRACE(dummy, "vector<T>::~vector");
         cout << "  count = " << count-- << endl;
 
         delete[] vec;
@@ -65,10 +65,10 @@ template <typename T>
 class vector<T*> : public vector<void*> {
    public:
     vector(const int& s = 0) : vector<void*>::vector(s) {
-        Trace dummy("vector<T*>::vector(int)");
+        TRACE(dummy, "vector<T*>::vector(int)");
     }
     ~vector() {
-        Trace dummy("vector<T*>::~vector");
+        TRACE(dummy, "vector<T*>::~vector");
     }
 
     inline T*& elem(int i) {
